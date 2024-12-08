@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "name": "Wolf So Grim and Mangy",
+    "price": 249.0,
+    "image": "https://via.placeholder.com/100",
+    "description": "We provide great-looking book cover artwork."
+  },
+  {
+    "id": 2,
+    "name": "A Tale of Two Cities",
+    "price": 150.0,
+    "image": "https://via.placeholder.com/100",
+    "description": "Classic novel by Charles Dickens."
+  }
+]
