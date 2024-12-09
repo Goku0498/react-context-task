@@ -1,62 +1,140 @@
 /* eslint-disable no-unused-vars */
-import React, { useContext } from "react";
-import CartContext from "./CartContext";
-import "./index.css";
+/* eslint-disable react-hooks/rules-of-hooks */
+import React, { useContext, useState } from "react";
+import { UserContext } from "./App";
 
 const Cart = () => {
-  const { cart, dispatch, totalQuantity, totalAmount } =
-    useContext(CartContext);
+  let { product, setProduct } = useContext(UserContext);
 
   return (
-    <div className="cart-container">
-      <h1>Shopping Cart</h1>
-      {cart.map((item) => (
-        <div key={item.id} className="cart-item">
-          <img src={item.image} alt={item.name} />
-          <div className="item-details">
-            <div className="item-title">{item.name}</div>
-            <div className="item-description">{item.description}</div>
-            <div className="item-price">${item.price.toFixed(2)}</div>
-            <button
-              className="remove-btn"
-              onClick={() =>
-                dispatch({ type: "REMOVE_ITEM", payload: item.id })
-              }
-            >
-              REMOVE
-            </button>
+    <div className="container">
+      {product.map((e, i) => {
+        const discountPrice = Math.round(
+          e.price * (e.discountPercentage / 100)
+        );
+        const [quantity, setQuantity] = useState(0);
+
+        const addQuantity = () => {
+          setQuantity(quantity + 1);
+        };
+
+        const removeQuantity = () => {
+          if (quantity > 1) {
+            setQuantity(quantity - 1);
+          }
+
+          setProduct(product);
+        };
+        const removebtnQuantity = () => {
+          setProduct((prevProducts) =>
+            prevProducts.map((item) =>
+              item === e ? { ...item, quantity: 0 } : item
+            )
+          );
+          setQuantity(0);
+        };
+
+        return (
+          <div
+            key={i}
+            className="card mb-5 bg-white text-dark"
+            style={{ minWidth: "100%", maxWidth: "300px" }}
+          >
+            <div className="row g-0">
+              <div className="col-md-3" style={{ alignContent: "center" }}>
+                <img
+                  src={e.image}
+                  className="img-fluid p-4 cardImage"
+                  alt="..."
+                />
+              </div>
+              <div className="col-md-9">
+                <div className="card-body px-3">
+                  <div className="top">
+                    <div className="top-header d-flex justify-content-between align-items-center">
+                      <h1 className="card-title">{e.title}&nbsp;</h1>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <p className="card-text">
+                        <b>Category: </b>
+                        {e.category}
+                      </p>
+                      <br></br>
+                    </div>
+                    <p className="card-text">{e.description}</p>
+                    <p className="card-text text-success">
+                      In Stock : {e.stock}
+                    </p>
+                    <p className="card-text">
+                      <b>Rating:</b> {e.rating}
+                    </p>
+                    <h4 className="card-title">${e.price}</h4>
+                    <br></br>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div className="d-flex flex-row justify-content-between align-items-center">
+                        <button
+                          type="button"
+                          className="btn btn-outline-secondary"
+                          style={{ marginRight: "20px" }}
+                          onClick={() => {
+                            removebtnQuantity();
+                          }}
+                        >
+                          Remove
+                        </button>
+
+                        <button
+                          type="button"
+                          className="btn btn-outline-danger"
+                          style={{ marginRight: "8px" }}
+                          onClick={() => {
+                            removeQuantity();
+                          }}
+                        >
+                          {" "}
+                          -{" "}
+                        </button>
+                        <div className="py-1 quantityText">{quantity}</div>
+                        <button
+                          type="button"
+                          className="btn btn-outline-success"
+                          style={{ marginLeft: "8px" }}
+                          onClick={() => {
+                            addQuantity();
+                          }}
+                        >
+                          {" "}
+                          +{" "}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div className="bottom">
+                    <div className="d-flex justify-content-between align-items-center">
+                      Original Price (1 item) :{" "}
+                      <p className="card-text">${e.price} </p>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center">
+                      Quantity: <p className="card-text">{quantity} </p>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center">
+                      Total Amount :{" "}
+                      <h5 className="card-text">${e.price * quantity}</h5>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary my-3 float-end"
+                  >
+                    Pay now
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="item-actions">
-            <button
-              onClick={() =>
-                dispatch({ type: "DECREASE_QUANTITY", payload: item.id })
-              }
-            >
-              -
-            </button>
-            <span>{item.quantity}</span>
-            <button
-              onClick={() =>
-                dispatch({ type: "INCREASE_QUANTITY", payload: item.id })
-              }
-            >
-              +
-            </button>
-          </div>
-        </div>
-      ))}
-      <div className="totals">
-        <p>
-          SUBTOTAL: <span>${totalAmount.toFixed(2)}</span>
-        </p>
-        <p>
-          SHIPPING: <span>FREE</span>
-        </p>
-        <h3>
-          TOTAL: <span>${totalAmount.toFixed(2)}</span>
-        </h3>
-      </div>
-      <div className="footer-note">Get Daily Cash With Nespola Card</div>
+        );
+      })}
     </div>
   );
 };
